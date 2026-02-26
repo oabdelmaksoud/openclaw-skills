@@ -203,10 +203,21 @@ def make_worker_node(agent_id: str, out: OutputManager, turn_timeout: int):
         response = call_agent(agent_id, prompt, turn_timeout)
         out.log(agent_id, response, "worker")
 
+        # Parse METADATA: key=value lines from agent response
+        new_metadata = dict(state.get("metadata", {}))
+        for line in response.splitlines():
+            line = line.strip()
+            if line.upper().startswith("METADATA:"):
+                kv = line.split(":", 1)[1].strip()
+                if "=" in kv:
+                    k, v = kv.split("=", 1)
+                    new_metadata[k.strip()] = v.strip()
+
         return {
             "messages": [{"agent": agent_id, "role": role, "content": response}],
             "steps": steps + 1,
             "result": response,
+            "metadata": new_metadata,
         }
 
     _node.__name__ = f"node_{agent_id}"
@@ -355,18 +366,17 @@ def build_supervisor_graph(
         g.add_edge(aid, "supervisor")
 
     # Supervisor routes to worker or END
-    def _route(state: GraphState) -> str:
-        next_a = state.get("next_agent", "FINISH")
+    def route(state: GraphState) -> str:
+        agent_ids = agents  # local alias for clarity in condition
+        nxt = state.get("next_agent", "FINISH")
         steps = state.get("steps", 0)
-        if steps >= max_steps or next_a == "FINISH":
+        if steps >= max_steps or nxt == "FINISH" or nxt not in agent_ids:
             return END
-        if next_a in agents:
-            return next_a
-        return END
+        return nxt
 
     cond_map = {aid: aid for aid in agents}
     cond_map[END] = END
-    g.add_conditional_edges("supervisor", _route, cond_map)
+    g.add_conditional_edges("supervisor", route, cond_map)
 
     return g.compile()
 
@@ -475,8 +485,18 @@ def main() -> None:
     args = parser.parse_args()
 
     agents = [a.strip() for a in args.agents.split(",") if a.strip()]
+    if args.topology == "conditional" and not args.condition:
+        print("Error: --condition is required for conditional topology.\n"
+              "Format: 'key=value:agent_true,agent_false'\n"
+              "Example: 'bug_found=true:forge,vigil'", file=sys.stderr)
+        sys.exit(1)
     output_dir = Path(args.output)
-    out = OutputManager(output_dir, args.task_id)
+    try:
+        out = OutputManager(output_dir, args.task_id)
+    # Cannot write output files here — directory creation failed, no output dir to write to.
+    except OSError as e:
+        print(f"Error: could not create output directory {output_dir}: {e}", file=sys.stderr)
+        sys.exit(1)
 
     try:
         metadata = json.loads(args.metadata)

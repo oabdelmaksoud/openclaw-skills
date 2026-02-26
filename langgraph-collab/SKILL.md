@@ -119,7 +119,13 @@ Example — route on bug severity (Pixel sets `metadata["severity"]` in its resp
 --condition "severity=high:forge,vigil"
 ```
 
-Note: metadata injection from agent responses is a v2 feature. In v1, set metadata programmatically or use supervisor topology for dynamic routing.
+Note: agents can set metadata by including `METADATA: key=value` on its own line in their response. The runner parses this automatically and updates the shared state metadata before routing.
+
+Example agent response:
+```
+I found a critical bug in the rate limiter.
+METADATA: severity=high
+```
 
 ## Troubleshooting
 

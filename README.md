@@ -1,68 +1,73 @@
-# openclaw-skills
+# OpenClaw Skills
 
-Custom [OpenClaw](https://openclaw.ai) skills for Cooper's 9-agent AI system.
+Custom OpenClaw skills by [@oabdelmaksoud](https://github.com/oabdelmaksoud).
 
-## What's here
+## Skills
 
 | Skill | Description |
 |-------|-------------|
-| `autogen-collab` | AutoGen-style round-robin debate runner — agents debate until consensus (`##AGREED##`). Routes all LLM calls through OpenClaw gateway, no API keys needed. |
-| `crewai-collab` | CrewAI 1.9.3 structured task runner (sequential / hierarchical / consensus). Role-based agents with explicit task expected outputs. |
-| `brainstorming` | Explore user intent and design before any implementation. |
-| `dispatching-parallel-agents` | Dispatch 2+ independent tasks as parallel subagents. |
-| `executing-plans` | Execute a written implementation plan in a separate session with review checkpoints. |
-| `finishing-a-development-branch` | Guides completion of development work (merge, PR, or cleanup). |
-| `frontend-design` | Create distinctive, production-grade frontend interfaces. |
-| `requesting-code-review` | Dispatch code-reviewer subagent after completing features. |
-| `receiving-code-review` | Handle incoming code review feedback with rigor. |
-| `subagent-driven-development` | Execute plans task-by-task with fresh subagents + two-stage review. |
-| `systematic-debugging` | Structured debugging approach before proposing fixes. |
-| `test-driven-development` | TDD workflow for features and bugfixes. |
-| `using-git-worktrees` | Isolated git worktrees for feature work. |
-| `verification-before-completion` | Verify work actually works before claiming it's done. |
-| `writing-plans` | Write implementation plans before touching code. |
-| `writing-automation-rules` | Create OpenClaw process/cron automation patterns. |
-| `writing-skills` | Create and verify new OpenClaw skills. |
-| `skill-creator` | Create, modify, and measure skill performance. |
-| `openclaw-*` | OpenClaw workspace, settings, agent, command, hook development guides. |
-| `hf-*` / `hugging-face-*` | Hugging Face Hub integrations (models, datasets, jobs, training, evaluation). |
-| `mcp-integration` | Integrate MCP servers into OpenClaw. |
-| `playground` | Create interactive HTML playgrounds. |
-| `stripe-best-practices` | Stripe integration best practices. |
-| `example-skill` | Reference template for creating new skills. |
+| [aoth-antiban](./aoth-antiban/) | 🛡️ Claude CLI Proxy ban protector — start, stop, status, logs, key rotation |
+| [autogen-collab](./autogen-collab/) | 🤖 AutoGen-based multi-agent debate engine (gateway-routed, no API keys) |
+| [crewai-collab](./crewai-collab/) | 🚢 CrewAI structured task runner — sequential, hierarchical, consensus modes |
+| [langgraph-collab](./langgraph-collab/) | 🕸️ LangGraph stateful agent graphs — linear, supervisor, parallel, conditional |
+| [brainstorming](./brainstorming/) | 💡 Explore user intent and design before any implementation |
+| [dispatching-parallel-agents](./dispatching-parallel-agents/) | ⚡ Dispatch independent tasks to parallel sub-agents |
+| [example-skill](./example-skill/) | 📋 Reference template for skill development |
+| [executing-plans](./executing-plans/) | 🎯 Execute implementation plans with review checkpoints |
+| [finishing-a-development-branch](./finishing-a-development-branch/) | 🏁 Guide completion of dev work — merge, PR, or cleanup |
+| [frontend-design](./frontend-design/) | 🎨 Production-grade frontend interfaces with high design quality |
+| [hf-mcp](./hf-mcp/) | 🤗 Hugging Face Hub via MCP — search models, datasets, Spaces |
+| [hugging-face-cli](./hugging-face-cli/) | 📦 HF CLI — download, upload, create repos, manage cache |
+| [hugging-face-datasets](./hugging-face-datasets/) | 📊 Create and manage HF datasets |
+| [hugging-face-evaluation](./hugging-face-evaluation/) | 📈 Add eval results to HF model cards |
+| [hugging-face-jobs](./hugging-face-jobs/) | ☁️ Run workloads on HF Jobs — GPU, Docker, batch |
+| [hugging-face-model-trainer](./hugging-face-model-trainer/) | 🏋️ Fine-tune LLMs with TRL on HF Jobs |
+| [hugging-face-paper-publisher](./hugging-face-paper-publisher/) | 📄 Publish research papers on HF Hub |
+| [hugging-face-tool-builder](./hugging-face-tool-builder/) | 🔧 Build reusable scripts from HF API data |
+| [hugging-face-trackio](./hugging-face-trackio/) | 📉 Track ML training experiments with Trackio |
+| [mcp-integration](./mcp-integration/) | 🔌 Integrate MCP servers into OpenClaw |
+| [openclaw-agent-development](./openclaw-agent-development/) | 🤖 Create and configure OpenClaw agents |
+| [openclaw-automation-recommender](./openclaw-automation-recommender/) | 🔍 Analyze codebase and recommend OpenClaw automations |
+| [openclaw-command-development](./openclaw-command-development/) | ⌨️ Create custom slash commands |
+| [openclaw-hook-development](./openclaw-hook-development/) | ⏰ Create cron jobs and process definitions |
+| [openclaw-md-improver](./openclaw-md-improver/) | 📝 Audit and improve CLAUDE.md, SOUL.md, openclaw.json |
+| [openclaw-settings](./openclaw-settings/) | ⚙️ Configure openclaw.json settings |
+| [openclaw-skill-development](./openclaw-skill-development/) | 🛠️ Create and improve OpenClaw skills |
+| [openclaw-workspace-structure](./openclaw-workspace-structure/) | 🗂️ Understand and organize OpenClaw workspace |
+| [playground](./playground/) | 🎮 Create interactive HTML playgrounds |
+| [receiving-code-review](./receiving-code-review/) | 👂 Handle code review feedback with technical rigor |
+| [requesting-code-review](./requesting-code-review/) | 🔎 Request code review before merging |
+| [skill-creator](./skill-creator/) | ✨ Create, improve, and eval OpenClaw skills |
+| [stripe-best-practices](./stripe-best-practices/) | 💳 Stripe integration best practices |
+| [subagent-driven-development](./subagent-driven-development/) | 🚀 Execute implementation plans with sub-agents |
+| [systematic-debugging](./systematic-debugging/) | 🔬 Debug any failure systematically before fixing |
+| [test-driven-development](./test-driven-development/) | ✅ TDD — write tests before implementation |
+| [using-git-worktrees](./using-git-worktrees/) | 🌿 Isolate feature work with git worktrees |
+| [using-skills](./using-skills/) | 📚 How to find and use OpenClaw skills |
+| [verification-before-completion](./verification-before-completion/) | ✔️ Verify work before claiming it's done |
+| [writing-automation-rules](./writing-automation-rules/) | 📋 Write OpenClaw automation rules |
+| [writing-plans](./writing-plans/) | 📐 Write implementation plans before coding |
+| [writing-skills](./writing-skills/) | ✍️ Write, edit, and verify OpenClaw skills |
 
-## Setup
+## Separate Repos
 
-Skills are installed globally at `~/.openclaw/skills/`. OpenClaw picks them up automatically.
+| Repo | Description |
+|------|-------------|
+| [AGI-Farm](https://github.com/oabdelmaksoud/AGI-Farm) | 🌾 Interactive wizard to deploy a full multi-agent AGI team workspace (3/5/11 agents, all frameworks) |
 
+## Install
+
+Copy any skill to your OpenClaw skills directory:
 ```bash
-# Clone into your skills directory
-git clone https://github.com/oabdelmaksoud/openclaw-skills ~/.openclaw/skills
-
-# For crewai-collab: install dependencies
-~/.openclaw/skills/crewai-collab/setup.sh
-
-# Build agent configs (crewai-collab + autogen-collab)
-python3 ~/.openclaw/skills/crewai-collab/build_agents.py --force
-python3 ~/.openclaw/skills/autogen-collab/build_personas.py --force
+cp -r <skill-name> ~/.openclaw/skills/
 ```
 
-## Architecture: autogen-collab + crewai-collab
-
-Both skills route LLM calls through OpenClaw's gateway — no `.env` or API keys needed:
-
-```
-Cooper (orchestrator)
-  └─ exec: python3 autogen_runner.py / crewai_runner.py
-       └─ per turn: openclaw agent --agent <id> --message <text> --json
-            └─ OpenClaw gateway → provider (Anthropic / Gemini / ZAI / MiniMax)
+Or clone the whole repo:
+```bash
+git clone https://github.com/oabdelmaksoud/openclaw-skills.git ~/.openclaw/skills-repo
 ```
 
-Output always written to `comms/autogen/<task-id>/` or `comms/crewai/<task-id>/`:
-- `status.json` — run status
-- `result.md` — final answer with YAML frontmatter
-- `transcript.md` — full conversation log
+## Related
 
-## License
-
-MIT
+- [OpenClaw](https://openclaw.ai)
+- [ClawHub](https://clawhub.com)

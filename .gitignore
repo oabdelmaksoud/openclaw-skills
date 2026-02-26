@@ -25,3 +25,6 @@ secrets.*
 .idea/
 .vscode/
 *.swp
+
+# AGI-Farm has its own repo: github.com/oabdelmaksoud/AGI-Farm
+agi-farm/

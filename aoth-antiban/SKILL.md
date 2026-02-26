@@ -121,6 +121,25 @@ curl -s -X POST http://127.0.0.1:3000/v1/chat/completions \
 
 > **Why all agents?** The proxy is FB1 (first fallback) for all 16 agents. If auth entries only exist for `main`, other agents will fail when falling back to the proxy.
 
+## Routing Architecture
+
+| Request Type | Route | Auth | Cost |
+|---|---|---|---|
+| **Text-only** (no tools/schemas/multimodal) | **CLI Mode** → `claude` CLI subprocess | Claude.ai subscription (OAuth session) | **$0** |
+| **Tools, tool_choice, response_format, multimodal** | **Strict Mode** → Anthropic Messages API | `ANTHROPIC_API_KEY` env var (`sk-ant-oat01-...`) | Paid API |
+
+- **CLI Mode**: Spawns `~/.local/bin/claude` with `--session-id`, `--system-prompt`, `-p`. Free via subscription.
+- **Strict Mode**: Uses `@anthropic-ai/sdk` with `ANTHROPIC_API_KEY` from `ecosystem.config.js` env. The `dummy-key` in OpenClaw config is only for gateway routing — proxy internally resolves to the real key.
+- **Session escalation**: Once a session uses tools, permanently escalated in LevelDB.
+- **Anti-detection**: Box-Muller jitter (new: 2.5–12s, repeat: 0.5–3s), circuit breaker (8 concurrent, 50/5min).
+
+### Anthropic OAuth Key Rotation
+
+If the `sk-ant-oat01-...` token is rotated:
+1. Update `ecosystem.config.js` → `env.ANTHROPIC_API_KEY`
+2. Update all agent `auth.json` + `auth-profiles.json` (for direct API access)
+3. `pm2 restart openclaw-claude-proxy --update-env`
+
 ## Error Handling
 
 - If PM2 is not installed: `npm install -g pm2`
@@ -134,6 +153,7 @@ curl -s -X POST http://127.0.0.1:3000/v1/chat/completions \
 ## Important Notes
 
 - Endpoint is `POST /v1/chat/completions` (OpenAI-compatible), NOT `/v1/messages`
-- `dummy-key` is intentional — local proxy needs no real auth
-- Testing from within Claude Code always shows "nested session" error — this means the proxy IS working
+- `dummy-key` in OpenClaw config is intentional — proxy resolves real Anthropic key from `ANTHROPIC_API_KEY` env var
+- Testing from within Claude Code always shows "nested session" error — this means the proxy IS working (CLI Mode correctly triggered)
 - LevelDB at `~/.claude/proxy_escalated_sessions.db/` tracks escalated sessions
+- After `npm install -g openclaw@<version>` upgrades, the `dist/apiClient.js` patch (dummy-key → env key fallback) may be overwritten — re-apply if needed

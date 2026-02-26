@@ -34,7 +34,7 @@ python3 ~/.openclaw/skills/langgraph-collab/build_agents.py --force
 |---|---|---|
 | `linear` | A → B → C → END | Sequential pipeline, each output feeds next |
 | `supervisor` | Supervisor ⇄ workers (dynamic) | Complex task, unknown sequence upfront |
-| `parallel` | All workers → synthesizer → END | Multiple expert perspectives on same task |
+| `parallel` | All workers run on same task (sequential fan-in) → synthesizer merges → END | Multiple expert perspectives on same task |
 | `conditional` | Agent → condition check → branch A or B | If/else routing on metadata |
 
 ## Available Agents
@@ -119,7 +119,7 @@ Example — route on bug severity (Pixel sets `metadata["severity"]` in its resp
 --condition "severity=high:forge,vigil"
 ```
 
-Note: agents can set metadata by including `METADATA: key=value` on its own line in their response. The runner parses this automatically and updates the shared state metadata before routing.
+In v1, set metadata at launch with `--metadata '{"key": "value"}'`. Agents can also set metadata by writing `METADATA: key=value` on its own line in their response.
 
 Example agent response:
 ```

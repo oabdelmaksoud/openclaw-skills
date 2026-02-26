@@ -21,6 +21,7 @@ Usage:
 import argparse
 import json
 import re
+import signal
 import subprocess
 import sys
 import time
@@ -36,6 +37,8 @@ from langgraph.graph import END, StateGraph
 
 SKILL_DIR = Path(__file__).parent
 AGENTS_DIR = SKILL_DIR / "agents"
+
+MAX_HISTORY_TURNS = 6  # cap message history to prevent context overflow
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -59,7 +62,7 @@ class OutputManager:
     def __init__(self, output_dir: Path, task_id: str):
         self.output_dir = output_dir
         self.task_id = task_id
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir.mkdir(parents=True, exist_ok=False)
         self._transcript_path = output_dir / "transcript.md"
         self._status_path = output_dir / "status.json"
         self._result_path = output_dir / "result.md"
@@ -187,7 +190,7 @@ def make_worker_node(agent_id: str, out: OutputManager, turn_timeout: int):
         # Build context from recent messages (capped to avoid token blow-up)
         ctx_parts = [
             f"[{m['agent'].upper()} — {m['role']}]:\n{m['content']}"
-            for m in prior[-6:]
+            for m in prior[-MAX_HISTORY_TURNS:]
         ]
         ctx = "\n\n".join(ctx_parts) if ctx_parts else "No prior context."
 
@@ -242,7 +245,7 @@ def make_supervisor_node(
 
         ctx_parts = [
             f"[{m['agent'].upper()} — {m['role']}]:\n{m['content'][:400]}"
-            for m in prior
+            for m in prior[-MAX_HISTORY_TURNS:]
         ]
         ctx = "\n\n".join(ctx_parts) if ctx_parts else "No work done yet."
 
@@ -298,7 +301,7 @@ def make_synthesizer_node(synthesizer_id: str, out: OutputManager, turn_timeout:
 
         sections = [
             f"### {m['agent'].upper()} ({m['role']})\n{m['content']}"
-            for m in prior
+            for m in prior[-MAX_HISTORY_TURNS:]
         ]
         perspectives = "\n\n".join(sections) if sections else "No expert input."
 
@@ -485,12 +488,18 @@ def main() -> None:
     args = parser.parse_args()
 
     agents = [a.strip() for a in args.agents.split(",") if a.strip()]
+    if not agents:
+        print("Error: --agents must contain at least one valid agent ID", file=sys.stderr)
+        sys.exit(1)
     if args.topology == "conditional" and not args.condition:
         print("Error: --condition is required for conditional topology.\n"
               "Format: 'key=value:agent_true,agent_false'\n"
               "Example: 'bug_found=true:forge,vigil'", file=sys.stderr)
         sys.exit(1)
     output_dir = Path(args.output)
+    if output_dir.exists():
+        print(f"[langgraph-runner] ERROR: output dir already exists: {output_dir}", file=sys.stderr)
+        sys.exit(1)
     try:
         out = OutputManager(output_dir, args.task_id)
     # Cannot write output files here — directory creation failed, no output dir to write to.
@@ -546,6 +555,12 @@ def main() -> None:
             raise ValueError(f"Unknown topology: {args.topology}")
 
         # ── Run ──────────────────────────────────────────────────────────────
+        def _timeout_handler(signum, frame):
+            raise TimeoutError(f"Graph exceeded --timeout {args.timeout}s wall-clock limit")
+
+        signal.signal(signal.SIGALRM, _timeout_handler)
+        signal.alarm(args.timeout)
+
         final_state = compiled.invoke(
             initial_state,
             {"recursion_limit": args.max_steps + 5},
@@ -559,6 +574,7 @@ def main() -> None:
         if not result and final_state.get("messages"):
             result = final_state["messages"][-1].get("content", "")
 
+        signal.alarm(0)  # cancel alarm on success
         print(
             f"[langgraph-runner] Complete in {elapsed:.1f}s | steps={steps_done}",
             file=sys.stderr, flush=True,

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 build_agents.py — reads each agent's SOUL.md and generates agents/ JSON configs
-for crewai-collab.
+for langgraph-collab.
 
 Usage:
   python3 build_agents.py            # rebuild stale only
@@ -29,6 +29,7 @@ AGENT_DIRS = {
     "vigil":  "quality-assurance",
     "anchor": "content-specialist",
     "lens":   "multimodal-specialist",
+    "main":   ".",  # Cooper — workspace root
 }
 
 AGENT_ROLES = {
@@ -40,6 +41,7 @@ AGENT_ROLES = {
     "vigil":  "Quality Assurance Engineer",
     "anchor": "Content Specialist",
     "lens":   "Multimodal Specialist",
+    "main":   "Orchestrator",
 }
 
 AGENT_GOALS = {
@@ -51,11 +53,13 @@ AGENT_GOALS = {
     "vigil":  "Ensure every output meets quality standards before it reaches Omar",
     "anchor": "Craft clear, compelling content that communicates complex ideas simply",
     "lens":   "Extract meaning from images, documents, and multimodal inputs with precision",
+    "main":   "Orchestrate specialist agents, decompose tasks, synthesize results, and deliver outcomes to Omar",
 }
 
 AGENT_NAMES = {
     "sage": "Sage", "forge": "Forge", "pixel": "Pixel", "vista": "Vista",
     "cipher": "Cipher", "vigil": "Vigil", "anchor": "Anchor", "lens": "Lens",
+    "main": "Cooper",
 }
 
 AGENT_MODELS = {
@@ -67,6 +71,7 @@ AGENT_MODELS = {
     "vigil":  "zai/glm-4.7-flash",
     "anchor": "minimax-portal/MiniMax-M2.5",
     "lens":   "google-gemini-cli/gemini-3-pro-preview",
+    "main":   "anthropic/claude-sonnet-4-6",
 }
 
 
@@ -83,7 +88,10 @@ def build_agent(agent_id: str, force: bool = False) -> bool:
         print(f"Unknown agent: {agent_id}", file=sys.stderr)
         return False
 
-    soul_path = AGENTS_WORKSPACES / agent_dir / "SOUL.md"
+    if agent_dir == ".":
+        soul_path = WORKSPACE / "SOUL.md"
+    else:
+        soul_path = AGENTS_WORKSPACES / agent_dir / "SOUL.md"
     out_path = AGENTS_DIR / f"{agent_id}.json"
 
     if not soul_path.exists():

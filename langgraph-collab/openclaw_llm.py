@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# NOTE: This file is NOT imported by langgraph_runner.py.
+# langgraph_runner.py uses its own call_agent() function directly.
+# This file is kept for reference/compatibility only.
 """
 openclaw_llm.py — LangGraph node LLM bridge to OpenClaw gateway.
 

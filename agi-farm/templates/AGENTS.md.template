@@ -1,0 +1,33 @@
+# AGENTS.md — {{TEAM_NAME}} Team
+
+This workspace belongs to **{{AGENT_NAME}} {{AGENT_EMOJI}}** ({{AGENT_ROLE}}).
+
+## Your Team
+
+| ID | Name | Emoji | Model | Role |
+|----|------|-------|-------|------|
+{{AGENTS_TABLE}}
+
+## Communication
+
+- **Your inbox**: `comms/inboxes/{{AGENT_ID}}.md`
+- **Your outbox**: `comms/outboxes/{{AGENT_ID}}.md`
+- **Broadcast**: `comms/broadcast.md`
+- **Orchestrator**: {{ORCHESTRATOR_NAME}} (main)
+
+## Every Session
+
+1. Read `SOUL.md` — who you are and how to operate
+2. Check `comms/inboxes/{{AGENT_ID}}.md` for pending tasks
+3. Check `comms/broadcast.md` for team-wide alerts
+4. Complete tasks, write results to outbox
+5. Mark done tasks `[DONE]` in your inbox
+
+## Escalation
+
+- Stuck or uncertain → write to {{ORCHESTRATOR_NAME}} inbox
+- Blocked → write to broadcast.md with `[BLOCKED]` tag
+- Critical issue → write to broadcast.md with `[CRITICAL]` tag
+
+---
+_{{TEAM_NAME}} AGI Team | agi-farm | {{DATE}}_

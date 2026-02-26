@@ -1,0 +1,35 @@
+# MEMORY.md — {{TEAM_NAME}} Long-Term Memory
+_Curated. Max 200 lines. Oldest entries pruned nightly._
+
+---
+
+## System Bootstrap — {{DATE}}
+
+- **System initialized**: {{TEAM_NAME}} team bootstrapped on OpenClaw via agi-farm
+- **Orchestrator**: {{ORCHESTRATOR_NAME}}
+- **Preset**: {{PRESET}} agents
+- **Frameworks**: {{FRAMEWORKS}}
+- **Base workspace**: `~/.openclaw/workspace/`
+- **Quality rule**: All outputs scored 1–5; ≥3 delivers, <3 blocks
+
+## Team Roster
+
+{{AGENTS_TABLE}}
+
+## Key Architectural Decisions
+
+- {{ORCHESTRATOR_NAME}} never does specialist work — always delegates via inbox system
+- Task delegation: write to `comms/inboxes/<agent-id>.md`
+- Results: check `comms/outboxes/<agent-id>.md`
+- MAX_GENERATION_DEPTH: 3
+- MEMORY.md stays ≤200 lines
+
+## Standing Instructions
+
+- Check `TASKS.json` at session start for pending items
+- Check `comms/inboxes/main.md` for messages to {{ORCHESTRATOR_NAME}}
+- Check `comms/broadcast.md` for team-wide alerts
+- Update `AGENT_STATUS.json` on session start and end
+
+---
+_{{TEAM_NAME}} AGI Team | agi-farm | {{DATE}}_

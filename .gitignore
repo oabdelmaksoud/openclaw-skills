@@ -1,0 +1,27 @@
+# Python virtual environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Generated/cached files
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Secrets / env
+.env
+*.env
+secrets.*
+
+# IDE
+.idea/
+.vscode/
+*.swp

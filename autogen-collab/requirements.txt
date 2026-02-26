@@ -1,0 +1,5 @@
+# autogen-collab has no pip dependencies.
+# All LLM calls route through `openclaw agent --json` using your
+# existing OpenClaw provider configuration.
+#
+# To run: python3 autogen_runner.py  (standard library only)
